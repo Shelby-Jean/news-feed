@@ -1,4 +1,5 @@
 import React from 'react';
+import SearchForm from './components/SearchForm';
 import Stories from './components/Stories';
 import './App.css';
 
@@ -61,27 +62,8 @@ class App extends React.Component {
       <div className="App">
         <header className="App-header">
           <h1>News Feed</h1>
-
-          <div>
-            <form onSubmit={this.search}>
-              <input 
-                name="keywordInput"
-                value={this.state.keywordInput} 
-                onChange={this.onChange} 
-                placeholder="Search by keyword"
-              />
-              <input 
-                name="authorInput"
-                value={this.state.authorInput} 
-                onChange={this.onChange} 
-                placeholder="Search by author"
-              />
-              <button type="submit">Search</button>
-            </form>
-          </div>
-
+          <SearchForm search={this.search} onChange={this.onChange} keywordInput={this.state.keywordInput} authorInput={this.state.authorInput} />
           <Stories relatedStories={this.state.relatedStories} />
-          
         </header>
       </div>
     )
