@@ -29,28 +29,30 @@ class App extends React.Component {
     })
   }
 
-  searchKeyword = (event) => {
+  search = (event) => {
     event.preventDefault();
-    const searchItem = this.state.keywordInput;
-    fetch(`http://hn.algolia.com/api/v1/search?query=${searchItem}&tags=story`)
-      .then(response => response.json())
-      .then(data => this.setState({
-        relatedStories: data.hits,
-        keywordInput: ''
-      }))
-      .catch(error => console.log(`Error, ${error}`))
-  }
+    const keyword = this.state.keywordInput;
+    const author = this.state.authorInput;
+    let url = '';
 
-  searchAuthor = (event) => {
-    event.preventDefault();
-    const searchItem = this.state.authorInput;
-    fetch(`https://hn.algolia.com/api/v1/search?tags=story,author_${searchItem}`)
-      .then(response => response.json())
-      .then(data => this.setState({
-        relatedStories: data.hits,
-        authorInput: ''
-      }))
-      .catch(error => console.log(`Error, ${error}`))
+    if(keyword && author) {
+      url = `https://hn.algolia.com/api/v1/search?query=${keyword}&tags=story,author_${author}`;
+    } else if(keyword) {
+      url = `http://hn.algolia.com/api/v1/search?query=${keyword}&tags=story`;
+    } else if(author) {
+      url = `https://hn.algolia.com/api/v1/search?tags=story,author_${author}`;
+    } else {
+      alert("Please enter search criteria in at least one input");
+    }
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => this.setState({
+          relatedStories: data.hits,
+          keywordInput: '',
+          authorInput: ''
+        }))
+        .catch(error => console.log(`Error, ${error}`))
   }
 
 
@@ -61,17 +63,13 @@ class App extends React.Component {
           <h1>News Feed</h1>
 
           <div>
-            <form onSubmit={this.searchKeyword}>
+            <form onSubmit={this.search}>
               <input 
                 name="keywordInput"
                 value={this.state.keywordInput} 
                 onChange={this.onChange} 
                 placeholder="Search by keyword"
               />
-              <button type="submit">Search</button>
-            </form>
-
-            <form onSubmit={this.searchAuthor}>
               <input 
                 name="authorInput"
                 value={this.state.authorInput} 
